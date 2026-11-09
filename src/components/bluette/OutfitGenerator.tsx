@@ -202,19 +202,6 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
             <PuffyStar color="yellow" size={32} />
           </div>
 
-          {/* Header Title */}
-          <div className="text-center space-y-1.5 mb-8 relative z-10">
-            <span className="inline-block bg-ice border border-paper px-3.5 py-0.5 rounded-full text-[11px] font-round font-bold uppercase tracking-wider text-ocean shadow-[0_2px_0_var(--color-sky)]">
-              {currentOutfit.vibe}
-            </span>
-            <h2 className="font-whimsical text-2xl sm:text-3xl font-bold text-ink">
-              {currentOutfit.title}
-            </h2>
-            <p className="font-helvetica text-xs sm:text-sm text-denim max-w-lg mx-auto italic font-normal leading-relaxed">
-              "{currentOutfit.aestheticNotes}"
-            </p>
-          </div>
-
           {/* Flatlay Clothing Cards with Real Uploaded Photographs */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 max-w-5xl mx-auto relative z-10">
             {currentOutfit.items.map((item, idx) => (
