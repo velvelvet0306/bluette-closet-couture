@@ -13,15 +13,6 @@ interface OutfitGeneratorProps {
   onNavigateToUpload: () => void;
 }
 
-const VIBES = [
-  'All Vibes',
-  'Soft Blue Coquette',
-  'Buttercup Morning',
-  'Dreamy Sunlit Stroll',
-  'Chic Picnic Afternoon',
-  'Minimalist Tailored',
-];
-
 export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
   wardrobe,
   currentOutfit,
@@ -30,7 +21,6 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
   onNavigateToSaved,
   onNavigateToUpload,
 }) => {
-  const [selectedVibe, setSelectedVibe] = useState('All Vibes');
   const [isGenerating, setIsGenerating] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [selectedPieceToSwap, setSelectedPieceToSwap] = useState<ClothingItem | null>(null);
@@ -58,7 +48,6 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
           wardrobe: wardrobe
             .filter((i) => !i.isAnalyzing)
             .map(({ id, name, category, colorName, colorHex }) => ({ id, name, category, colorName, colorHex })),
-          ...(selectedVibe !== 'All Vibes' ? { vibe: selectedVibe } : {}),
         },
       });
 
@@ -161,22 +150,8 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
       {/* Control Bar (Dimensional 3D Controls) */}
       <div className="max-w-2xl mx-auto rounded-[32px] bg-paper border-3 border-paper p-4 shadow-[0_8px_0_var(--color-sky),0_16px_28px_color-mix(in_oklab,var(--color-sky)_35%,transparent)] flex flex-col sm:flex-row items-center justify-between gap-4">
         
-        {/* Vibe Selector */}
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <PuffyStar color="blue" size={20} />
-          <select
-            value={selectedVibe}
-            onChange={(e) => setSelectedVibe(e.target.value)}
-            className="w-full sm:w-auto bg-mist border-2 border-ice rounded-full px-4 py-2 text-xs font-round font-bold text-ink focus:outline-hidden focus:border-sky-bright"
-          >
-            {VIBES.map(v => (
-              <option key={v} value={v}>{v}</option>
-            ))}
-          </select>
-        </div>
-
         {/* Action Buttons */}
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <div className="flex items-center gap-3 w-full justify-center">
           <button
             onClick={handleGenerate}
             disabled={isGenerating}
