@@ -8,6 +8,13 @@
       "when": 1794242161758,
       "tag": "0000_bluette_cloud_closet",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794242186352,
+      "tag": "0001_bluette_storage_policies",
+      "breakpoints": true
     }
   ]
 }
