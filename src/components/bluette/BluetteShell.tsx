@@ -36,10 +36,6 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-3 text-[11px] font-round font-medium text-fog">
             <span className="flex items-center gap-1.5">
               <PuffyStar color="yellow" size={14} />
-              <span>AI Powered by Gemini</span>
-            </span>
-            <span>·</span>
-            <span>
               {wardrobe.length} clothing item{wardrobe.length !== 1 ? 's' : ''} in closet
             </span>
           </div>
