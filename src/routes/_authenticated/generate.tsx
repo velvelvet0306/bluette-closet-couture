@@ -2,14 +2,14 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { OutfitGenerator } from "@/components/bluette/OutfitGenerator";
 import { useBluette } from "@/components/bluette/BluetteProvider";
 
-export const Route = createFileRoute("/generate")({
+export const Route = createFileRoute("/_authenticated/generate")({
   head: () => ({
     meta: [
       { title: "Generate Outfit Studio — bluette" },
       {
         name: "description",
         content:
-          "Pick a vibe and bluette's AI stylist pairs pieces from your real wardrobe into a dreamy, harmonised outfit.",
+          "bluette's AI stylist pairs pieces from your real wardrobe into a dreamy, harmonised outfit.",
       },
       { property: "og:title", content: "Generate Outfit Studio — bluette" },
       {
