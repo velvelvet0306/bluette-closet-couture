@@ -1,19 +1,19 @@
 {
   "source": "code-archive (Google AI Studio app: wardrobe-ai.zip, brand name 'bluette')",
   "capabilities": [
-    { "capability": "code", "source": "React SPA (App.tsx + 6 components) served by Express/Vite", "outcome": "migrate to TanStack Start routes: / (wardrobe), /generate, /saved", "status": "in_progress", "next_action": "port components and shared state" },
-    { "capability": "design/assets", "source": "src/index.css palette, DynaPuff/Fredoka/Quicksand fonts, SVG brand art; public/assets/aistudio images are unreferenced", "outcome": "migrate palette to oklch tokens, fonts via head link", "status": "in_progress", "next_action": "port styles" },
+    { "capability": "code", "source": "React SPA (App.tsx + 6 components) served by Express/Vite", "outcome": "migrated to TanStack Start routes: / (wardrobe), /generate, /saved with shared BluetteProvider", "status": "verified", "next_action": "none" },
+    { "capability": "design/assets", "source": "src/index.css palette, DynaPuff/Fredoka/Quicksand fonts, SVG brand art; public/assets/aistudio images unreferenced by code", "outcome": "palette converted to oklch tokens, fonts via head link; unreferenced images not copied", "status": "verified", "next_action": "none" },
     { "capability": "schema", "source": "none - no server database", "outcome": "not applicable", "status": "verified", "next_action": "none" },
-    { "capability": "records", "source": "browser IndexedDB 'bluette_fashion_db' (wardrobe_items, saved_outfits) per visitor device", "outcome": "preserve browser-local storage with same DB name/stores so behaviour matches source; no server records exist to export", "status": "in_progress", "next_action": "port storage util" },
+    { "capability": "records", "source": "browser IndexedDB 'bluette_fashion_db' on each visitor's device", "outcome": "preserved browser-local storage (same DB/store names). Data saved on the old AI Studio site stays in that site's browser storage and cannot be exported/transferred; users re-upload", "status": "accepted", "next_action": "none" },
     { "capability": "auth identities", "source": "none - app has no sign-in", "outcome": "not applicable", "status": "verified", "next_action": "none" },
     { "capability": "authorization", "source": "none", "outcome": "not applicable", "status": "verified", "next_action": "none" },
-    { "capability": "uploaded file bytes", "source": "photos stored as compressed base64 in browser IndexedDB", "outcome": "preserve client-side compression + local storage", "status": "in_progress", "next_action": "port" },
-    { "capability": "AI clothing recognition", "source": "POST /api/analyze-clothing, Gemini gemini-3.8-flash via AI Studio-injected GEMINI_API_KEY", "outcome": "server function on Lovable AI with google/gemini-3.8-flash (same model), same fallback", "status": "in_progress", "next_action": "implement + live test" },
-    { "capability": "AI outfit recommendation", "source": "POST /api/recommend-outfit, Gemini gemini-3.8-flash", "outcome": "server function on Lovable AI with google/gemini-3.8-flash, deterministic fallback kept", "status": "in_progress", "next_action": "implement + live test" },
-    { "capability": "public endpoints/callbacks/webhooks", "source": "/api/* only called by the app itself; no external callers", "outcome": "replaced by internal server functions", "status": "in_progress", "next_action": "none beyond AI items" },
+    { "capability": "uploaded file bytes", "source": "photos compressed to 1400px JPEG, stored base64 in IndexedDB", "outcome": "preserved; photos are no longer sent to the server for outfit generation (only garment metadata)", "status": "verified", "next_action": "none" },
+    { "capability": "AI clothing recognition", "source": "POST /api/analyze-clothing, gemini-3.8-flash via AI Studio-injected GEMINI_API_KEY", "outcome": "analyzeClothing server function on Lovable AI, google/gemini-3.8-flash, same prompt + fallback", "status": "verified", "next_action": "none" },
+    { "capability": "AI outfit recommendation", "source": "POST /api/recommend-outfit, gemini-3.8-flash", "outcome": "recommendOutfit server function on Lovable AI, google/gemini-3.8-flash, deterministic fallback kept (unit tested)", "status": "verified", "next_action": "none" },
+    { "capability": "public endpoints/callbacks/webhooks", "source": "/api/* only called by the app itself", "outcome": "replaced by internal server functions", "status": "verified", "next_action": "none" },
     { "capability": "schedules", "source": "none", "outcome": "not applicable", "status": "verified", "next_action": "none" },
     { "capability": "secrets", "source": "GEMINI_API_KEY (AI Studio runtime-injected), APP_URL (platform)", "outcome": "not needed - Lovable AI built in", "status": "verified", "next_action": "none" },
     { "capability": "cutover", "source": "AI Studio hosting", "outcome": "publish on Lovable when ready", "status": "pending", "next_action": "user publishes" },
-    { "capability": "verification", "source": "-", "outcome": "build, routes, upload + AI recognition, outfit generation, save look", "status": "pending", "next_action": "run browser checks" }
+    { "capability": "verification", "source": "-", "outcome": "build + typecheck clean; browser: upload 2 photos -> AI named/categorised, generate outfit via AI, save look, saved page persists after reload; mobile layout checked", "status": "verified", "next_action": "none" }
   ]
 }

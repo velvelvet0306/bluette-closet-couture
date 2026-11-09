@@ -28,3 +28,11 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- bluette closet data (wardrobe items, saved outfits, photos) lives in the browser's IndexedDB via `src/lib/bluette/storage.ts`; there is no sign-in, so per-device storage keeps each visitor's closet private.
+- App-wide closet state lives in `BluetteProvider` (mounted once by `BluetteShell` in `__root.tsx`); pages under `src/routes` read it with `useBluette()` so state survives navigation.
+- AI calls go through server functions in `src/lib/bluette/stylist.functions.ts` (logic in `stylist.server.ts`); only garment metadata is sent for outfit ideas, never photos, to keep payloads small.
+- Outfit fallback/ID-validation rules live in `src/lib/bluette/outfit-rules.ts` with tests beside it, so the stylist can never return pieces the user doesn't own.
+- Brand colours are tokens in `src/styles.css` (`--ink`, `--sky`, `--butter`, ...); components use token utilities or `var(--color-*)` inside arbitrary values, never raw hex.
