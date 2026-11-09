@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { GARMENT_CATEGORIES } from "./outfit-rules";
 import { analyzeGarmentPhoto, recommendOutfitFromWardrobe } from "./stylist.server";
 
@@ -13,6 +14,7 @@ const analyzeInput = z.object({
 });
 
 export const analyzeClothing = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => analyzeInput.parse(data))
   .handler(async ({ data }) => analyzeGarmentPhoto(data.imageBase64));
 
@@ -30,6 +32,7 @@ const recommendInput = z.object({
 });
 
 export const recommendOutfit = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => recommendInput.parse(data))
   .handler(async ({ data }) => {
     const wardrobe = data.wardrobe.map((i) => ({
