@@ -1,23 +1,39 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { MyWardrobe } from "@/components/bluette/MyWardrobe";
+import { useBluette } from "@/components/bluette/BluetteProvider";
 
-// The home route ships no og:image, so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "My Wardrobe — bluette dreamy digital closet" },
+      {
+        name: "description",
+        content:
+          "Upload photos of your clothes and bluette's AI names, colours and sorts every piece into your dreamy digital closet.",
+      },
+      { property: "og:title", content: "My Wardrobe — bluette dreamy digital closet" },
+      {
+        property: "og:description",
+        content: "A cute, whimsical digital closet: upload clothing photos and let AI organise them for you.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: WardrobePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function WardrobePage() {
+  const { wardrobe, uploadPhotos, deleteItem, toggleFavoriteItem } = useBluette();
+  const navigate = useNavigate();
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <MyWardrobe
+      wardrobe={wardrobe}
+      onUploadFiles={uploadPhotos}
+      onDeleteItem={deleteItem}
+      onToggleFavorite={toggleFavoriteItem}
+      onNavigateToGenerate={() => navigate({ to: "/generate" })}
+    />
   );
 }
