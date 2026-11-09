@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { ClothingItem, SavedOutfit } from '@/lib/bluette/types';
 import { PuffyStar, PuffyPlanet, CandyWashiTape } from './BrandDecorations';
 import { Sparkles, RefreshCw, Bookmark, Heart, Check, ArrowRight, Plus } from 'lucide-react';
+import { recommendOutfit } from '@/lib/bluette/stylist.functions';
 
 interface OutfitGeneratorProps {
   wardrobe: ClothingItem[];
@@ -42,6 +43,11 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
       return;
     }
 
+    if (wardrobe.every(i => i.isAnalyzing)) {
+      setErrorMessage('Your pieces are still being identified — try again in a moment.');
+      return;
+    }
+
     setIsGenerating(true);
     setErrorMessage(null);
 
@@ -73,8 +79,8 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
           accentColor: data.outfit.accentColor,
           isFavorite: false,
         });
-      } else if (!data.success) {
-        setErrorMessage(data.error || 'Could not generate outfit with current clothes.');
+      } else {
+        setErrorMessage((!data.success && data.error) || 'Could not generate outfit with current clothes.');
       }
     } catch (error) {
       console.error('Error generating outfit:', error);
