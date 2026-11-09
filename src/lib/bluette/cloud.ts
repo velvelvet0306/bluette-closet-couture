@@ -123,7 +123,14 @@ export async function updateWardrobeItem(
   itemId: string,
   patch: Partial<Pick<ClothingItem, 'name' | 'category' | 'colorName' | 'colorHex' | 'isFavorite' | 'isAnalyzing'>>,
 ): Promise<void> {
-  const row: Record<string, unknown> = {};
+  const row: {
+    name?: string;
+    category?: string;
+    color_name?: string;
+    color_hex?: string;
+    is_favorite?: boolean;
+    is_analyzing?: boolean;
+  } = {};
   if (patch.name !== undefined) row.name = patch.name;
   if (patch.category !== undefined) row.category = patch.category;
   if (patch.colorName !== undefined) row.color_name = patch.colorName;

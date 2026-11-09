@@ -12,7 +12,7 @@ export interface ClothingItem {
   category: GarmentCategory;
   photoUrl: string;
   /** Location of the photo in cloud storage; photoUrl is a temporary display link for it. */
-  photoPath?: string;
+  photoPath?: string | undefined;
   colorName: string;
   colorHex: string;
   dateAdded: string;
