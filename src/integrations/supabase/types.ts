@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_path: string | null
+          created_at: string
+          display_name: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_path?: string | null
+          created_at?: string
+          display_name?: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_path?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      saved_outfits: {
+        Row: {
+          accent_color: string
+          aesthetic_notes: string
+          created_at: string
+          date: string
+          id: string
+          is_favorite: boolean
+          items: Json
+          title: string
+          user_id: string
+          vibe: string
+        }
+        Insert: {
+          accent_color?: string
+          aesthetic_notes?: string
+          created_at?: string
+          date?: string
+          id: string
+          is_favorite?: boolean
+          items?: Json
+          title: string
+          user_id?: string
+          vibe?: string
+        }
+        Update: {
+          accent_color?: string
+          aesthetic_notes?: string
+          created_at?: string
+          date?: string
+          id?: string
+          is_favorite?: boolean
+          items?: Json
+          title?: string
+          user_id?: string
+          vibe?: string
+        }
+        Relationships: []
+      }
+      wardrobe_items: {
+        Row: {
+          category: string
+          color_hex: string
+          color_name: string
+          created_at: string
+          date_added: string
+          id: string
+          is_analyzing: boolean
+          is_favorite: boolean
+          name: string
+          photo_path: string | null
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          color_hex?: string
+          color_name?: string
+          created_at?: string
+          date_added?: string
+          id: string
+          is_analyzing?: boolean
+          is_favorite?: boolean
+          name?: string
+          photo_path?: string | null
+          user_id?: string
+        }
+        Update: {
+          category?: string
+          color_hex?: string
+          color_name?: string
+          created_at?: string
+          date_added?: string
+          id?: string
+          is_analyzing?: boolean
+          is_favorite?: boolean
+          name?: string
+          photo_path?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

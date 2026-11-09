@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794242161758,
+      "tag": "0000_bluette_cloud_closet",
+      "breakpoints": true
+    }
+  ]
 }
