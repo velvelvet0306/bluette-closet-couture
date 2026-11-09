@@ -1,16 +1,6 @@
 # Bluette Closet Couture
 
-/skill:migrate-external-project Source: code archive. Migrate the attached project into Lovable.
 
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/b3a1c4e7-3cda-4cce-aa2c-5e7aa3f96c64).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
