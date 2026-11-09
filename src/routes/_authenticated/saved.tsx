@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SavedOutfits } from "@/components/bluette/SavedOutfits";
 import { useBluette } from "@/components/bluette/BluetteProvider";
 
-export const Route = createFileRoute("/saved")({
+export const Route = createFileRoute("/_authenticated/saved")({
   head: () => ({
     meta: [
       { title: "Saved Outfits Lookbook — bluette" },
