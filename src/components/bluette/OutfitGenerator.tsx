@@ -189,11 +189,7 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
           {currentOutfit && (
             <button
               onClick={handleSave}
-              className={`px-6 py-2.5 rounded-full text-xs font-round font-bold flex items-center gap-2 transition-all ${
-                savedSuccess
-                  ? 'puffy-btn-yellow text-ink'
-                  : 'puffy-btn-white text-ink'
-              }`}
+              className="puffy-btn-yellow text-ink px-6 py-2.5 rounded-full text-xs font-round font-bold flex items-center gap-2 transition-all"
             >
               {savedSuccess ? (
                 <>
@@ -202,7 +198,7 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
                 </>
               ) : (
                 <>
-                  <Heart className="w-4 h-4 text-sky-bright fill-sky-bright" />
+                  <Heart className="w-4 h-4 text-ink fill-paper" />
                   <span>Save Look</span>
                 </>
               )}
@@ -305,13 +301,31 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
               <span>Recommended by Gemini using your uploaded wardrobe pieces</span>
             </div>
 
-            <button
-              onClick={onNavigateToSaved}
-              className="flex items-center gap-1.5 text-ocean font-round font-bold hover:underline"
-            >
-              <span>Open Saved Outfits Journal</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleSave}
+                className="puffy-btn-yellow text-ink px-5 py-2 rounded-full text-xs font-round font-bold flex items-center gap-2"
+              >
+                {savedSuccess ? (
+                  <>
+                    <Check className="w-4 h-4 stroke-[3]" />
+                    <span>Saved Look!</span>
+                  </>
+                ) : (
+                  <>
+                    <Heart className="w-4 h-4 text-ink fill-paper" />
+                    <span>Save this Look</span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={onNavigateToSaved}
+                className="flex items-center gap-1.5 text-ocean font-round font-bold hover:underline"
+              >
+                <span>Open Saved Outfits Journal</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
         </div>
