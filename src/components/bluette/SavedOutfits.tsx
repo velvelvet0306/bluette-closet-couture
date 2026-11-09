@@ -82,9 +82,6 @@ export const SavedOutfits: React.FC<SavedOutfitsProps> = ({
                 {/* Header Information */}
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <span className="inline-block bg-ice border border-paper px-2.5 py-0.5 rounded-full text-[10px] font-round font-bold uppercase tracking-wider text-ocean shadow-[0_1px_0_var(--color-sky)]">
-                      {outfit.vibe}
-                    </span>
                     <h3 className="font-round text-base font-bold text-ink line-clamp-1 mt-1">
                       {outfit.title}
                     </h3>
@@ -114,11 +111,6 @@ export const SavedOutfits: React.FC<SavedOutfitsProps> = ({
                     </div>
                   ))}
                 </div>
-
-                {/* Aesthetic Quote in Helvetica */}
-                <p className="font-helvetica text-xs text-dusk italic line-clamp-2">
-                  "{outfit.aestheticNotes}"
-                </p>
               </div>
 
               {/* Card Footer */}
@@ -158,9 +150,6 @@ export const SavedOutfits: React.FC<SavedOutfitsProps> = ({
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b-2 border-ice pb-4">
               <div className="space-y-1">
-                <span className="inline-block bg-ice border border-paper px-2.5 py-0.5 rounded-full text-[10px] font-round font-bold uppercase tracking-wider text-ocean shadow-[0_1px_0_var(--color-sky)]">
-                  {selectedOutfitModal.vibe}
-                </span>
                 <h3 className="font-whimsical text-2xl font-bold text-ink">
                   {selectedOutfitModal.title}
                 </h3>
@@ -191,16 +180,6 @@ export const SavedOutfits: React.FC<SavedOutfitsProps> = ({
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Styling Note */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-ice to-cream border-2 border-paper space-y-1 text-center shadow-xs">
-              <span className="text-[10px] uppercase font-round font-bold text-ocean">
-                Aesthetic Curator Note
-              </span>
-              <p className="font-helvetica text-sm text-ink italic">
-                "{selectedOutfitModal.aestheticNotes}"
-              </p>
             </div>
 
             {/* Modal Footer */}
