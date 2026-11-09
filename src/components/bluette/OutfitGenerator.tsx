@@ -46,20 +46,34 @@ export const OutfitGenerator: React.FC<OutfitGeneratorProps> = ({
     setErrorMessage(null);
 
     try {
-      const response = await fetch('/api/recommend-outfit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          wardrobe,
-          vibe: selectedVibe !== 'All Vibes' ? selectedVibe : undefined,
-        }),
+      // Only garment details go to the stylist — photos stay on this device.
+      const data = await recommendOutfit({
+        data: {
+          wardrobe: wardrobe
+            .filter((i) => !i.isAnalyzing)
+            .map(({ id, name, category, colorName, colorHex }) => ({ id, name, category, colorName, colorHex })),
+          ...(selectedVibe !== 'All Vibes' ? { vibe: selectedVibe } : {}),
+        },
       });
 
-      const data = await response.json();
+      const items = data.success
+        ? data.outfit.itemIds
+            .map((id) => wardrobe.find((i) => i.id === id))
+            .filter((i): i is ClothingItem => Boolean(i))
+        : [];
 
-      if (data.success && data.outfit) {
-        onUpdateOutfit(data.outfit);
-      } else {
+      if (data.success && items.length > 0) {
+        onUpdateOutfit({
+          id: data.outfit.id,
+          title: data.outfit.title,
+          vibe: data.outfit.vibe,
+          date: 'Just now',
+          items,
+          aestheticNotes: data.outfit.aestheticNotes,
+          accentColor: data.outfit.accentColor,
+          isFavorite: false,
+        });
+      } else if (!data.success) {
         setErrorMessage(data.error || 'Could not generate outfit with current clothes.');
       }
     } catch (error) {
