@@ -1,4 +1,4 @@
-import { generateChatCompletion } from "@lovable.dev/ai-gateway";
+import { GoogleGenAI } from "@google/genai";
 import {
   DEFAULT_ACCENT,
   DEFAULT_VIBE,
@@ -10,30 +10,36 @@ import {
 } from "./outfit-rules";
 import type { GarmentCategory } from "./types";
 
-// Runs on Lovable's built-in AI gateway (reads LOVABLE_API_KEY from the
-// server environment) — no separate Gemini key is needed.
-const MODEL = "google/gemini-3.8-flash" as const;
+const MODEL = "gemini-3.8-flash";
 const AI_TIMEOUT_MS = 20_000;
 
-/** Pulls the text out of a chat completion, whether content is a string or parts. */
-function completionText(response: {
-  choices?: Array<{ message?: { content?: unknown } }>;
-}): string {
-  const content = response.choices?.[0]?.message?.content;
+function getGeminiClient() {
+  const apiKey = process.env.GEMINI_API_KEY;
 
-  if (typeof content === "string") return content;
-
-  if (Array.isArray(content)) {
-    return content
-      .map((part) =>
-        part && typeof part === "object" && "text" in part && typeof part.text === "string"
-          ? part.text
-          : "",
-      )
-      .join("");
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is missing from environment variables.");
   }
 
-  return "";
+  return new GoogleGenAI({ apiKey });
+}
+
+async function withTimeout<T>(promise: Promise<T>): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("Gemini request timed out."));
+    }, AI_TIMEOUT_MS);
+
+    promise.then(
+      (result) => {
+        clearTimeout(timer);
+        resolve(result);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
 }
 
 export interface RecognizedGarment {
@@ -54,8 +60,8 @@ const FALLBACK_GARMENT: RecognizedGarment = {
   colorHex: DEFAULT_ACCENT,
 };
 
-function logAiError(where: string, error: unknown) {
-  console.error(`[stylist] ${where} AI error`, error);
+function logGeminiError(where: string, error: unknown) {
+  console.error(`[stylist] ${where} Gemini error`, error);
 }
 
 function parseJson(text: unknown): Record<string, unknown> {
@@ -108,63 +114,57 @@ Analyze this image and identify:
 4. "colorHex": The best matching aesthetic hex code for the dominant color (e.g. "#A3DCF8", "#FEDD79", "#F8FAFC", "#70A0CA", "#E297A9").`;
 
   try {
-    // Throws early on anything that isn't a base64 image data URL.
-    parseImageDataUrl(dataUrl);
+    const image = parseImageDataUrl(dataUrl);
+    const ai = getGeminiClient();
 
-    const response = await generateChatCompletion(
-      {
+    const response = await withTimeout(
+      ai.models.generateContent({
         model: MODEL,
-        messages: [
+        contents: [
           {
-            role: "user",
-            content: [
-              { type: "image_url", image_url: { url: dataUrl } },
-              { type: "text", text: prompt },
-            ],
-          },
-        ],
-        response_format: {
-          type: "json_schema",
-          json_schema: {
-            name: "garment_analysis",
-            strict: true,
-            schema: {
-              type: "object",
-              additionalProperties: false,
-              properties: {
-                name: {
-                  type: "string",
-                  description: "Short descriptive name of the garment.",
-                },
-                category: {
-                  type: "string",
-                  enum: [
-                    "Tops",
-                    "Bottoms",
-                    "Dresses",
-                    "Outerwear",
-                    "Shoes",
-                    "Accessories",
-                  ],
-                },
-                colorName: {
-                  type: "string",
-                  description: "Dominant color name.",
-                },
-                colorHex: {
-                  type: "string",
-                  description: "Dominant color hex code starting with #.",
-                },
-              },
-              required: ["name", "category", "colorName", "colorHex"],
+            inlineData: {
+              mimeType: image.mimeType,
+              data: image.data,
             },
           },
+          prompt,
+        ],
+        config: {
+          responseMimeType: "application/json",
+          responseJsonSchema: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "Short descriptive name of the garment.",
+              },
+              category: {
+                type: "string",
+                enum: [
+                  "Tops",
+                  "Bottoms",
+                  "Dresses",
+                  "Outerwear",
+                  "Shoes",
+                  "Accessories",
+                ],
+              },
+              colorName: {
+                type: "string",
+                description: "Dominant color name.",
+              },
+              colorHex: {
+                type: "string",
+                description: "Dominant color hex code starting with #.",
+              },
+            },
+            required: ["name", "category", "colorName", "colorHex"],
+          },
         },
-      },
-      { signal: AbortSignal.timeout(AI_TIMEOUT_MS) },
+      }),
     );
 
-    const parsed = parseJson(completionText(response));
+    const parsed = parseJson(response.text);
 
     return {
       success: true,
@@ -176,7 +176,7 @@ Analyze this image and identify:
       },
     };
   } catch (error) {
-    logAiError("analyze", error);
+    logGeminiError("analyze", error);
 
     return {
       success: false,
@@ -217,56 +217,52 @@ STRICT RULES:
 6. Write a thoughtful 1-2 sentence aesthetic styling note explaining why these specific pieces pair wonderfully together.`;
 
   try {
-    const response = await generateChatCompletion(
-      {
+    const ai = getGeminiClient();
+
+    const response = await withTimeout(
+      ai.models.generateContent({
         model: MODEL,
-        messages: [{ role: "user", content: prompt }],
-        response_format: {
-          type: "json_schema",
-          json_schema: {
-            name: "outfit_recommendation",
-            strict: true,
-            schema: {
-              type: "object",
-              additionalProperties: false,
-              properties: {
-                selectedItemIds: {
-                  type: "array",
-                  items: { type: "string" },
-                  description: "Array of exact item IDs chosen from the wardrobe.",
-                },
-                title: {
-                  type: "string",
-                  description: "Charming title for this outfit.",
-                },
-                vibe: {
-                  type: "string",
-                  description: "Styling vibe or mood name.",
-                },
-                aestheticNotes: {
-                  type: "string",
-                  description: "Explanation of why these exact pieces work together.",
-                },
-                accentColor: {
-                  type: "string",
-                  description: "Hex accent color for the outfit card.",
-                },
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseJsonSchema: {
+            type: "object",
+            properties: {
+              selectedItemIds: {
+                type: "array",
+                items: { type: "string" },
+                description: "Array of exact item IDs chosen from the wardrobe.",
               },
-              required: [
-                "selectedItemIds",
-                "title",
-                "vibe",
-                "aestheticNotes",
-                "accentColor",
-              ],
+              title: {
+                type: "string",
+                description: "Charming title for this outfit.",
+              },
+              vibe: {
+                type: "string",
+                description: "Styling vibe or mood name.",
+              },
+              aestheticNotes: {
+                type: "string",
+                description: "Explanation of why these exact pieces work together.",
+              },
+              accentColor: {
+                type: "string",
+                description: "Hex accent color for the outfit card.",
+              },
             },
+            required: [
+              "selectedItemIds",
+              "title",
+              "vibe",
+              "aestheticNotes",
+              "accentColor",
+            ],
           },
         },
-      },
-      { signal: AbortSignal.timeout(AI_TIMEOUT_MS) },
+      }),
     );
 
-    const parsed = parseJson(completionText(response));
+    const parsed = parseJson(response.text);
     const itemIds = keepKnownIds(parsed["selectedItemIds"], wardrobe);
 
     if (itemIds.length === 0) {
@@ -285,7 +281,7 @@ STRICT RULES:
       itemIds,
     };
   } catch (error) {
-    logAiError("recommend", error);
+    logGeminiError("recommend", error);
 
     return buildFallbackOutfit(wardrobe, vibe ?? DEFAULT_VIBE);
   }
